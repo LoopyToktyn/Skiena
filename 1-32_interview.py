@@ -1,5 +1,5 @@
 from typing import List, Optional
-
+import math
 def dailyTemperatures(temperatures: List[int]) -> List[int]:
         result = []
         list_size = len(temperatures)
@@ -42,18 +42,31 @@ def rotateRight(head: Optional[ListNode], k: int) -> Optional[ListNode]:
     if not head or not head.next or k==0:
         return head
     n = 1
-    head_ref = head
-    while head.next is not None:
-        head = head.next
+    old_tail = head
+    while old_tail.next is not None:
+        old_tail = old_tail.next
         n += 1
-    head.next = head_ref
-    if k > n:
-        k = k % n
-    for i in range(n-k):
-        head_ref = head_ref.next
-    new_head = head_ref.next
-    head_ref.next = None
+    old_tail.next = head
+    k %= n
+    new_tail = head
+    for i in range(n-k-1):
+        new_tail = new_tail.next
+    new_head = new_tail.next
+    new_tail.next = None
     return new_head
 
 
-print(rotateRight(ListNode(1,ListNode(2,ListNode(3))),1))
+# print(rotateRight(ListNode(1,ListNode(2,ListNode(3))),1))
+
+
+# sort list in ascending order
+# split list down the middle
+# interleave the lists
+def wiggleSort(nums: List[int]) -> None:
+    nums.sort()
+    half = len(nums[::2])
+    nums[::2],nums[1::2] = nums[:half],nums[half:][::-1]
+
+nums = [1,2,3,4,5,6,7]
+wiggleSort(nums)
+print(nums)

@@ -1,4 +1,5 @@
 import unittest
+from collections import deque
 
 class TestRemoveDigits(unittest.TestCase):
     def test1(self):
@@ -22,40 +23,65 @@ class TestRemoveDigits(unittest.TestCase):
 
 # My idea that I'm coming to is that I want as many consecutively increasing smallest-possible digits as I can obtain within the limits of numbers I can remove
 # We'll probably want to look at a window of k+1. When k0 is greater than any value in window, remove it.
-# When we get to window that encompasses last character, drop the largest values remaining (ci+1+k == len(num))
 # 123[6759]48821
-# 12312 / 3
-# 11
+# # def removeKdigits(num: str, k: int) -> str:
+#     length = len(num)
+#     if k >= len(num):
+#         return "0"
+    
+#     indices_to_drop = []
+    
+#     for ci in range(length):
+#         is_smallest = True
+#         i = 1
+#         while is_smallest and i <= k:
+#             if ci + i >= length or num[ci] > num[ci+i]:
+#                 # print(f"Removing {num[ci]} because it is greater than {num[ci+i]}")
+#                 is_smallest = False
+#                 indices_to_drop.append(ci)
+#                 k -= 1 #reduce k-window
+#             i += 1
+
+
+#     new_str = num
+#     while indices_to_drop:
+#         new_str = new_str[:indices_to_drop[-1]] + new_str[indices_to_drop[-1]+1:]
+#         indices_to_drop.pop()
+
+#     # remove leading 0s
+#     while len(new_str) > 1 and new_str[0] == "0":
+#         new_str = new_str[1:]
+
+#     return new_str
+
+
 def removeKdigits(num: str, k: int) -> str:
-    length = len(num)
+    result = deque([])
+
     if k >= len(num):
         return "0"
+
+    # Create a stack, add every number, remove numbers when a smaller value is found, decrement k
+    for val in num:
+        while len(result) > 0 and k > 0 and val < result[-1]:
+            result.pop()
+            k -= 1
+        result.append(val)
+
+  
+
+    # If end of list is reached and there are still values to remove, remove them from end of string. 
+    # All situations like this should only have numbers in ascending order from left to right at this point, never descending
+    for _ in range(k):
+        result.pop()
+
+    # Remove leading 0s. This is the primary reason we're using a deque
+    while len(result) > 1 and result[0] == "0":
+        result.popleft()
     
-    indices_to_drop = []
+    return ''.join(result)
     
-    for ci in range(length):
-        is_smallest = True
-        i = 1
-        while is_smallest and i <= k:
-            if ci + i >= length or num[ci] > num[ci+i]:
-                # print(f"Removing {num[ci]} because it is greater than {num[ci+i]}")
-                is_smallest = False
-                indices_to_drop.append(ci)
-                k -= 1 #reduce k-window
-            i += 1
-
-
-    new_str = num
-    while indices_to_drop:
-        new_str = new_str[:indices_to_drop[-1]] + new_str[indices_to_drop[-1]+1:]
-        indices_to_drop.pop()
-
-    # remove leading 0s
-    while len(new_str) > 1 and new_str[0] == "0":
-        new_str = new_str[1:]
-
-    return new_str
-
+            
 
 
 if __name__ == '__main__':

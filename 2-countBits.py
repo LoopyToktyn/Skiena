@@ -11,11 +11,25 @@ class TestCountBits(unittest.TestCase):
     def test8(self):
         self.assertEqual(countBits(8),[0,1,1,2,1,2,2,3,1])
 
+class TestCountBitsV2(unittest.TestCase):
+    def test0(self):
+        self.assertEqual(countBits_v2(0),[0])
+    def test2(self):
+        self.assertEqual(countBits_v2(2),[0,1,1])
+    def test8(self):
+        self.assertEqual(countBits_v2(8),[0,1,1,2,1,2,2,3,1])
+
 class TestConvertVal(unittest.TestCase):
     def test4(self):
         self.assertEqual(convert_int_to_binary_list(4),[1,0,0])
     def test5(self):
         self.assertEqual(convert_int_to_binary_list(5),[1,0,1])
+
+class TestConvertValV2(unittest.TestCase):
+    def test4(self):
+        self.assertEqual(convert_int_to_binary_list_v2(4),[1,0,0])
+    def test5(self):
+        self.assertEqual(convert_int_to_binary_list_v2(5),[1,0,1])
 
 
 # let's do the naive approach first. For each i in n, convert to binary representation, count the 1s
@@ -29,6 +43,9 @@ def countBits(n: int) -> List[int]:
         result.append(count)
     return result
 
+def countBits_v2(n: int) -> List[int]:
+    return [bin(i).count("1") for i in range(n+1)]
+
 def convert_int_to_binary_list(i: int) -> int:
     # init array of binary to appropriate length
     result = [0 for _ in range(math.floor(math.log2(i))+1)]
@@ -37,6 +54,14 @@ def convert_int_to_binary_list(i: int) -> int:
         result[-(log+1)] = 1
         i -= 2**log
     return result
+
+
+def convert_int_to_binary_list_v2(i: int) -> int:
+    result = []
+    while i:
+        result.append(i & 1)
+        i >>= 1
+    return result[::-1] # Missy Elliott
 
 if __name__ == '__main__':
     unittest.main()

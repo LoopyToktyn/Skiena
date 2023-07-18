@@ -20,3 +20,7 @@ def test_is_balanced6():
 
 def test_is_balanced7():
     assert isBalanced("())()(())(()") == False
+
+
+def test_length1():
+    assert nonContigBalanceLength(")()(())()()))())))(") == 12

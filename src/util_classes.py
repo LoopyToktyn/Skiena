@@ -57,4 +57,9 @@ class TreeNode(Generic[T]):
             ret += self.right.__str__(level + 1)
         return ret
     
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other,TreeNode):
+            return False
+        return self.val == other.val and self.left == other.left and self.right == other.right
+    
 

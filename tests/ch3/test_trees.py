@@ -51,3 +51,33 @@ def test_find_two_nerds6(): # 1,2,5,4,3,6
     root.right = t6
     root.right.left = t3
     assert find_nerds_v3(root) == (t5,t3)
+
+
+def test_is_balanced1():
+    root = t4
+    root.left = t2
+    root.left.right = t5
+    root.left.left = t1
+    root.right = t6
+    root.right.left = t3
+    assert is_balanced(root)
+
+def test_is_balanced2():
+    root = t1
+    root.left = t2
+    root.left.left = t3
+    root.left.right = t7
+    root.left.left.left = t4
+    root.left.left.right = t5
+    root.right = t6
+    assert not is_balanced(root)
+
+def test_is_balanced3():
+    root = t1
+    root.left = t2
+    root.left.right = t5
+    root.left.left = t4
+    root.left.left.left = t8
+    root.right = t3
+    root.right.left = t6
+    assert is_balanced(root)

@@ -84,7 +84,6 @@ def find_nerds_v2(root: TreeNode) -> List[TreeNode]:
 def create_list_left_right(root: TreeNode) -> List[TreeNode]:
     if root is None:
         return []
-    
     return create_list_left_right(root.left) + [root] + create_list_left_right(root.right)
 
 # Nope, that didn't work either. Consider the list 5,6,1,2,3,4. 5 might check out, 6 wouldn't, and now we might be looking at a sort problem of nlgn
@@ -108,8 +107,8 @@ def create_list_left_right(root: TreeNode) -> List[TreeNode]:
 # 1,2,5,4,3,6 (3 & 5)
 
 # Given this set, let's find the pattern. The two nodes we're looking for appear to always be:
-# 1) the node greater than the next node
-# 2) the last node less than the previous node (the first node less than will be the one immediately after 1), but we could find another later in the list)
+# 1) the first node greater than the next node
+# 2) the last node less than the previous node (the first node less than will be the one immediately after step 1, but we could find another later in the list)
 # If this holds, then we were off to a good start by traversing and creating a list. We fell off track with the algorithm that then stepped through that list.
 # Let's try again!
 
@@ -125,12 +124,39 @@ def find_nerds_v3(root: TreeNode) -> tuple[TreeNode,TreeNode]:
     return (greater,lesser)
 
 
+"""
+3-17. [5] Give an O(n) algorithm that determines whether a given n-node binary tree
+is height-balanced (see Problem 3-15).
+"""
+
+def is_balanced(root: TreeNode) -> bool:
+    max_min = is_balanced_helper(root)
+    return max_min[1] - max_min[0] < 2
+
+def is_balanced_helper(root: TreeNode) -> tuple[int,int]:
+    if root is None:
+        return 0,0
+    left_min, left_max = is_balanced_helper(root.left)
+    right_min, right_max = is_balanced_helper(root.right)
+
+    return min(left_min,right_min) + 1, max(left_max,right_max) + 1
 
 
+# Above approach was naive and misunderstood the definition of height-balanced. See test 3 for an example of where that algo gives the wrong answer
+# New approach, we keep a truthiness of each subtree as well as keep track of the max depth so far. Short circuit if we find a boner.
+
+def is_balanced_v2(root: TreeNode) -> bool:
+    balanced,height = is_balanced_helper_v2(root)
+    return balanced
+
+def is_balanced_helper_v2(root: TreeNode) -> tuple[bool,int]:
+    if root is None:
+        return True,0
     
+    left_balanced, left_height = is_balanced_helper_v2(root.left)
+    right_balanced, right_height = is_balanced_helper_v2(root.right)
 
+    if not left_balanced or not right_balanced:
+        return False,0 # value doesn't matter here, don't bother calculating anything
 
-
-tree = TreeNode.build_random_tree(10)
-print(tree)
-print(f"Depth: {depth(tree)}")
+    return abs(left_height - right_height) < 2, max(left_height,right_height) + 1

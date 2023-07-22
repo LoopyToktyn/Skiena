@@ -199,4 +199,52 @@ def is_k_unique(arr: List, k: int) -> bool:
 
     return True
 
-print(TreeNode.init_balanced([1,2,3,4,5]))
+"""
+3-25. [5] In the bin-packing problem, we are given n objects, each weighing at most
+1 kilogram. Our goal is to find the smallest number of bins that will hold the n
+objects, with each bin holding 1 kilogram at most.
+    • The best-fit heuristic for bin packing is as follows. Consider the objects
+    in the order in which they are given. For each object, place it into the
+    partially filled bin with the smallest amount of extra room after the object is 
+    inserted. If no such bin exists, start a new bin. Design an algorithm that 
+    implements the best-fit heuristic (taking as input the n weights
+    w1, w2, ..., wn and outputting the number of bins used) in O(n log n) time.
+    • Repeat the above using the worst-fit heuristic, where we put the next
+    object into the partially filled bin with the largest amount of extra room
+    after the object is inserted.
+"""
+
+# Let's define a BinStruct that maintains max_space and a BBST. Nodes values will represent space_remaining (initialized on creation to max_space)
+# max_space will be a constant built into a datastructure wrapping the tree
+# BinStruct Functions:
+#   - findmin(item) will find the node with the least space remaining that fits the given item
+#   - addbin(item) will create a new bin, add it to the tree, and initialize the space_remaining based on the size of the item passed in.
+#     This will also increment the count.
+#   - update(node,item) will take a node and an item and update the remaining space and rebalance the tree
+
+class BinStruct:
+    def __init__(self,max_space) -> None:
+        self.max_space = max_space
+        self.bins = TreeNode(max_space)
+        self.count = 1
+    def findmin(self,size):
+        pass
+    def addbin(self,item) -> None:
+        pass
+    def update(self,node,item) -> None:
+        pass
+    def __len__(self) -> int:
+        pass
+
+def best_fit(n,max_space) -> int:
+    bins = BinStruct(max_space)
+
+    for i in n:
+        min_bin = bins.findmin(i)
+        if min_bin is None:
+            bins.addbin(i)
+        else:
+            bins.update(min_bin,i)
+
+    return bins.count
+

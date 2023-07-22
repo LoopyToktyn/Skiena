@@ -1,6 +1,6 @@
 from src.ch3.trees import *
 
-
+# INIT SOME VALS #
 t1 = TreeNode(1)
 t2 = TreeNode(2)
 t3 = TreeNode(3)
@@ -10,8 +10,9 @@ t6 = TreeNode(6)
 t7 = TreeNode(7)
 t8 = TreeNode(8)
 
-
+#########################
 # Let's find some nerds
+#########################
 def test_find_two_nerds1(): # 2,1
     root = t1
     root.left = t2
@@ -53,6 +54,10 @@ def test_find_two_nerds6(): # 1,2,5,4,3,6
     assert find_nerds_v3(root) == (t5,t3)
 
 
+
+#########################
+# Let's test our balance!
+#########################
 def test_is_balanced1():
     root = t4
     root.left = t2
@@ -81,3 +86,44 @@ def test_is_balanced3():
     root.right = t3
     root.right.left = t6
     assert is_balanced(root)
+
+
+def test_create_balanced_even():
+    assert is_balanced(TreeNode.init_balanced([1,2,3,4]))
+
+def test_create_balanced_even_large():
+    assert is_balanced(TreeNode.init_balanced([1,2,3,4,9,12,14,21,56,34,10,96]))
+
+def test_create_balanced_odd():
+    assert is_balanced(TreeNode.init_balanced([1,2,3,4,5]))
+
+
+def test_find_min():
+    root = t1
+    root.left = t2
+    root.left.right = t5
+    root.left.left = t4
+    root.left.left.left = t8
+    root.right = t3
+    root.right.left = t6
+    assert root.findmin() == t8
+
+def test_delete():
+    root = t5
+    root.left = t2
+    root.left.right = t4
+    root.left.right.left = t3
+    root.left.left = t1
+    root.right = t7
+    root.right.left = t6
+
+    result = TreeNode(5)
+    result.left = TreeNode(3)
+    result.left.right = TreeNode(4)
+    result.left.left = TreeNode(1)
+    result.right = TreeNode(7)
+    result.right.left = TreeNode(6)
+
+    root = root.delete(2)
+    assert  root == result
+    

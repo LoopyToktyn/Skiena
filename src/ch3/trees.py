@@ -1,5 +1,8 @@
+import sys
+sys.path.insert(0, r'F:\ws-py3\Skiena')
 from src.util_classes import TreeNode
 from typing import List
+  
 
 """
 3-12. [3] The maximum depth of a binary tree is the number of nodes on the path
@@ -160,3 +163,26 @@ def is_balanced_helper_v2(root: TreeNode) -> tuple[bool,int]:
         return False,0 # value doesn't matter here, don't bother calculating anything
 
     return abs(left_height - right_height) < 2, max(left_height,right_height) + 1
+
+
+
+"""
+3-24. [5] An array A is called k-unique if it does not contain a pair of duplicate
+elements within k positions of each other, that is, there is no i and j such that
+A[i] = A[j] and |j - i| ≤ k. Design a worst-case O(n log k) algorithm to test if
+A is k-unique.
+"""
+
+# I'm gonna need to do some additional work to prep for this one. We're gonna need
+# to build a balanced tree and have the ability to insert and delete items from 
+# this tree while keeping it balanced. (We gonna do this manual, not use libs)
+
+# Once we've got our ability to make a tree, we're gonna maintain a window of size k
+# and step through the array. If at any time we try to add something to the window
+# and that window already contains the element, we'll return false.
+
+def is_k_unique(arr: List, k: int) -> bool:
+
+    return False
+
+print(TreeNode.init_balanced([1,2,3,4,5]))

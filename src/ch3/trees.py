@@ -2,6 +2,7 @@ import sys
 sys.path.insert(0, r'F:\ws-py3\Skiena')
 from src.util_classes import TreeNode
 from typing import List
+from collections import deque
   
 
 """
@@ -182,7 +183,20 @@ A is k-unique.
 # and that window already contains the element, we'll return false.
 
 def is_k_unique(arr: List, k: int) -> bool:
+    bbst = TreeNode(arr[0])
+    window = deque()
 
-    return False
+    for c in arr:
+        if c in bbst:
+            return False
+        
+        bbst.insert_balanced(c)
+        window.append(c)
+           
+        if len(window) > k:
+            oldest = window.popleft()
+            bbst.delete_balanced(oldest)
+
+    return True
 
 print(TreeNode.init_balanced([1,2,3,4,5]))

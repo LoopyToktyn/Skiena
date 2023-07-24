@@ -1,6 +1,7 @@
 import sys
 sys.path.insert(0, r'F:\ws-py3\Skiena')
-from src.util_classes import TreeNode
+from src.util_classes.BinarySearchTree import TreeNode
+from src.util_classes.SegmentTree import TreeNode as SegTreeNode
 from typing import List
 from collections import deque
   
@@ -217,7 +218,12 @@ objects, with each bin holding 1 kilogram at most.
 # Let's define a BinStruct that maintains max_space and a BBST. Nodes values will represent space_remaining (initialized on creation to max_space)
 # max_space will be a constant built into a datastructure wrapping the tree
 # BinStruct Functions:
-#   - findmin(item) will find the node with the least space remaining that fits the given item
+#   - findminbin(item) will find the node with the least space remaining that fits the given item
+#     - The underlying tree algorithm here would be to first check the MAX of the tree, AKA the bin with the most space available. If this object is too big
+#       for that bin, we can short circuit and immediately just add a new bin. From here there are two approaches:
+#       - SIMPLE: start at MIN and call successor until n fits O(n)
+#       - TRICKY: traverse like you're doing an INSERT. Once you've found the node under which you would insert this value, if it's greater than current_node, 
+#                 return current_node's successor, else return its predecessor O(lg n)
 #   - addbin(item) will create a new bin, add it to the tree, and initialize the space_remaining based on the size of the item passed in.
 #     This will also increment the count.
 #   - update(node,item) will take a node and an item and update the remaining space and rebalance the tree
@@ -227,7 +233,7 @@ class BinStruct:
         self.max_space = max_space
         self.bins = TreeNode(max_space)
         self.count = 1
-    def findmin(self,size):
+    def findminbin(self,size):
         pass
     def addbin(self,item) -> None:
         pass
@@ -240,7 +246,7 @@ def best_fit(n,max_space) -> int:
     bins = BinStruct(max_space)
 
     for i in n:
-        min_bin = bins.findmin(i)
+        min_bin = bins.findminbin(i)
         if min_bin is None:
             bins.addbin(i)
         else:
@@ -248,3 +254,25 @@ def best_fit(n,max_space) -> int:
 
     return bins.count
 
+
+
+
+"""
+3-26. [5] Suppose that we are given a sequence of n values x1, x2, ..., xn and seek to
+quickly answer repeated queries of the form: given i and j, find the smallest
+value in xi,...,xj .
+(a) Design a data structure that uses O(n2) space and answers queries in O(1)
+time.
+(b) Design a data structure that uses O(n) space and answers queries in
+O(log n) time. For partial credit, your data structure can use O(n log n)
+space and have O(log n) query time.
+
+a) We could design an n x n matrix that maintains the smallest value from any i to j
+   Initialization of the matrix would take n^2 time, but lookups would be constant time.
+   Init would involve storing the smallest value from i to j in each n x n cell such that matrix[i][j] returns the smallest value
+   Matrix would really only need to be half full, no need to store values in any matrix[j][i]
+
+b) O(n) space with O(lg n) time screams "tree!". After a big of digging, I have discovered...The Segment Tree!
+   Since we don't have to maintain this or deal with insert/delete operations (although we could and I should build that...),
+   We can implement this as a regular BST that's balanced at initialization then just store and use this static structure.
+"""

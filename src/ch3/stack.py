@@ -1,4 +1,4 @@
-from src.util_classes import *
+from src.util_classes.LinkedList import *
 from typing import TypeVar,Generic
 
 T = TypeVar('T')

@@ -66,7 +66,7 @@ class SegmentTree:
             left = nodes[i]
             right = nodes[i+1]
             if left and right:
-                parent = TreeNode(self.func(left.val,right.val),left,right)
+                parent = TreeNode(self.compare(left.val,right.val),left,right)
                 parents.append(parent)
             else: # No right child means we just use the value of the left child
                 parent = TreeNode(left.val,left,right)

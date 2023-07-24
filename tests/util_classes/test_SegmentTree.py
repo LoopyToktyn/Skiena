@@ -42,4 +42,6 @@ def test_query4():
     tree = SegmentTree([12,1,6,99,24,727,42,10,24,9],max)
     assert tree.query(4,6) == 727
 
-
+def test_query5():
+    tree = SegmentTree([12,1,6,99,24,727,42,10,24,9],min)
+    assert tree.query(4,6) == 24

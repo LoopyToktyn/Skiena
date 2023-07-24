@@ -26,10 +26,20 @@ def test_init2():
     assert SegmentTree([0,1,2,3,4],max).root == root
 
 
+def test_query1():
+    tree = SegmentTree([0,1,2,3,4],max)
+    assert tree.query(1,1) == 0
 
-"""
-       4
-   3       4
- 1   3   4   n
-0 1 2 3 4 n n n
-"""
+def test_query2():
+    tree = SegmentTree([0,1,2,3,4,5,6,7,8,9],max)
+    assert tree.query(1,4) == 3
+
+def test_query3():
+    tree = SegmentTree([0,1,2,3,4,5,6,7,8,9],max)
+    assert tree.query(3,8) == 7
+
+def test_query4():
+    tree = SegmentTree([12,1,6,99,24,727,42,10,24,9],max)
+    assert tree.query(4,6) == 727
+
+

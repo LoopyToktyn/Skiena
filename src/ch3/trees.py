@@ -2,6 +2,8 @@ import sys
 sys.path.insert(0, r'F:\ws-py3\Skiena')
 from src.util_classes.BinarySearchTree import TreeNode
 from src.util_classes.SegmentTree import TreeNode as SegTreeNode
+from src.util_classes.CountSmallerTree import CountTreeNode
+from src.util_classes.BinaryIndexTree import BinaryIndexTree
 from typing import List
 from collections import deque
   
@@ -283,40 +285,7 @@ b) O(n) space with O(lg n) time screams "tree!". After a big of digging, I have 
 Given an integer array nums, return an integer array counts where counts[i] is the number of smaller elements to the right of nums[i].
 """
 
-class CountTreeNode:
-    def __init__(self, val, left = None, right = None) -> None:
-        self.val = val
-        self.num_left = 0
-        self.left = left
-        self.right = right
-    
-    def insert(self,val,count = 0) -> int:
-        if self is None:
-            self = CountTreeNode(val)
-            return count
-        if val < self.val:
-            if self.left is None:
-                self.num_left += 1 # We need to increment here to keep a count of left children for use by any nodes added to right side later
-                self.left = CountTreeNode(val)
-                return count
-            else:
-                self.num_left += 1 # We need to increment here to keep a count of left children for use by any nodes added to right side later
-                return self.left.insert(val, count) # Pass in original count, not the incremented one
-        if val > self.val:
-            count += self.num_left + 1
-            if self.right is None:
-                self.right = CountTreeNode(val)
-                return count
-            else:
-                return self.right.insert(val, count)
-        if val == self.val: 
-            count += self.num_left
-            if self.right is None:
-                self.right = CountTreeNode(val)
-                return count
-            else:
-                return self.right.insert(val, count)
-
+# This works as a good average-case but still has a worst case running time of O(n^2) in the event of descending or ascending list
 def count_smaller(nums: List[int]) -> List[int]:
     root = CountTreeNode(nums.pop())
     result = [0]
@@ -327,4 +296,23 @@ def count_smaller(nums: List[int]) -> List[int]:
     result.reverse()
     return result
 
-print(count_smaller([3,1,4,2]))
+def count_smaller_v2(nums: List[int]) -> List[int]:
+    # Transform all of our values into a positive integer, ignore duplicates
+    # Use a hash table/dictionary for lookup
+    sorted_nums = sorted(set(nums))
+    ranks = {val: i+1 for i,val in enumerate(sorted_nums)}
+
+    # initialize our BIT and result
+    bit = BinaryIndexTree(len(nums))
+    result = [0] * len(nums)
+
+    # Perform surgery right to left
+    for i in reversed(range(len(nums))):
+        rank = ranks[nums[i]] # lookup our rank-equivalent value
+        result[i] = bit.query(rank-1) # Get sum of all values smaller than current rank and store in result list
+        bit.update(rank,1) # Increment affected ranks by 1
+
+    return result
+
+# print(count_smaller_v2([3,1,4,2]))
+print(count_smaller_v2([0,1,2]))

@@ -127,3 +127,24 @@ def test_delete():
     root = root.delete(2)
     assert  root == result
     
+
+def test_tree_builder1():
+    root = t1
+    root.left = t2
+    root.right = t3
+
+    assert build_tree([1,2,3],[2,1,3]) == root
+
+def test_tree_builder2():
+    root = t1
+    root.left = t2
+    root.left.left = t3
+
+    assert build_tree([1,2,3],[3,2,1]) == root
+
+def test_tree_builder3():
+    root = t1
+    root.right = t2
+    root.right.right = t3
+
+    assert build_tree([1,2,3],[1,2,3]) == root

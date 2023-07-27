@@ -314,5 +314,122 @@ def count_smaller_v2(nums: List[int]) -> List[int]:
 
     return result
 
-# print(count_smaller_v2([3,1,4,2]))
-print(count_smaller_v2([0,1,2]))
+
+"""
+LEET: Given two integer arrays preorder and inorder where preorder is the preorder traversal 
+      of a binary tree and inorder is the inorder traversal of the same tree, construct and return the binary tree.
+
+PRE 2 1 5 0 3 6 4
+IN  5 0 1 3 6 2 4
+TR  2 1 4 5 3 n n n 0 6
+
+i = n
+[0, n, 2n, 2n+1, 2*2n, 2*2n+1, 3*2n, 3*2n+1]
+    r  rl  rr    rll   rlr     rrl   rrr
+ 
+ i=0            i=1         i=2
+[i, 2i+1, 2i+2, 2i+1, 2i+2, 2i+1, 2i+2]
+ r  rl    rr    rll   rlr   rrl   rrr
+
+i = 1
+j = 1
+r = 1
+prepend both PRE and IN arrays with 0 (for easier intuition)
+stack = []
+while i < len(PRE)
+    if PRE[i] != IN[j], then PRE.next is left child
+        set result[r] = PRE[i]
+        set result pointer to left child (r = r*2)
+        add PRE[i] to stack
+        i++
+        continue
+    else if equal, then next will either be a parent we've already traversed or a new right child.
+        result[r] = PRE[i]
+        if IN[j+1] != stack[-1], then it's a new right child
+            r = r*2 + 1
+            i++
+            j++
+        else we go back up to a parent
+            parent = stack.pop()
+            r = find_index(parent)
+            j++
+
+
+2 1 _ 5 _ _ _ _ 0 _
+
+
+OOPS, this is supposed to return a treenode not an array. Maybe solution will be more straight forward? Let's see where we get.
+PRE 2 1 3 4 0 6
+IN  1 3 2 0 4 6
+TR  2 1 4 n 3 0 6
+
+PRE 2 1 3 4 6
+IN  3 1 2 4 6
+TR  2 1 4 3 n n 6
+
+FUNC(PRE,IN) -> node,PRE,IN
+    if not PRE:
+        return None, PRE, IN
+    while len(IN) > len(PRE): # pop parent nodes
+        IN = IN[1:]
+    node = TreeNode(PRE[0])
+    if PRE[0] == IN[0]
+        node.left = None
+        node.right,pre_r,in_r = FUNC(PRE[1:], IN[1:])
+        return node, pre_r, in_r
+    else
+        node.left,pre_l,in_l = FUNCT(PRE[1:],IN)
+        node.right, pre_r, in_r = FUNC(pre_l, in_l)
+        return node, pre_r, in_r
+
+PRE 1,2,3
+IN  2,1,3
+TR  1,2,3
+        
+"""
+
+### GARBAGE
+# def build_tree(preorder: List[int], inorder: List[int]) -> TreeNode:
+#     node, _, _ = build_tree_helper(deque(preorder),deque(inorder))
+#     return node
+
+# def build_tree_helper(PRE: deque[int], IN: deque[int], stack: List[int] = []) -> tuple[TreeNode, List[int], List[int]]:
+#     if not PRE:
+#         return None, PRE, IN, stack
+#     if IN[0] == stack[-1]:
+#         stack.pop()
+#         IN.popleft()
+#         return None, PRE, IN, stack
+#     node = TreeNode(PRE[0])
+#     if PRE[0] == IN[0]:
+#         node.left = None
+#         node.right,pre_r,in_r = build_tree_helper(PRE[1:], IN[1:],stack)
+#         return node, pre_r, in_r, stack
+#     else:
+#         stack.append(PRE.popleft())
+#         node.left,pre_l,in_l = build_tree_helper(PRE,IN,stack)
+#         node.right, pre_r, in_r = build_tree_helper(pre_l, in_l,stack)
+#         return node, pre_r, in_r, stack
+
+"""
+PRE 1,2,3
+IN  2,1,3
+TR  1,2,3
+"""
+
+def build_tree(preorder: List[int], inorder: List[int]) -> TreeNode:
+
+    def helper(right_boundary: int = None) -> TreeNode:
+        if not inorder or inorder[0] == right_boundary:
+            return None
+
+        root_val = preorder.pop(0)
+        root = TreeNode(root_val)
+
+        root.left = helper(root_val)
+        inorder.remove(root_val)
+        root.right = helper(right_boundary)
+
+        return root
+    
+    return helper()

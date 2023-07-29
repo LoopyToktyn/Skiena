@@ -434,7 +434,27 @@ def build_tree(preorder: List[int], inorder: List[int]) -> TreeNode:
     
     return helper()
 
+"""
+Given an integer n, return the number of structurally unique BST's (binary search trees) which has exactly n nodes of unique values from 1 to n.
+https://leetcode.com/problems/unique-binary-search-trees/description/
 
+The insight here is that after you've calculated the number of possibilities in the smallest trees, every bigger tree was just a combination
+of those smaller trees. We can memoize the results as we work our way up to n and then do some sums.
+
+I drew this out to help visualize the solution. The root would always be one node. The subtrees would always be a split of nodes.
+Multiple the combinations in the left tree by the right tree for the total number of unique combinations for that split of nodes.
+Sum up all the possible splits of nodes. If we treat 0 and 1 as base cases, we can handle the rest easily. Treat a 0 side as a
+"multiply by 1".
+
+0    1     2     3     4     5
+
+0    1     1     1     1     1
+    0 0   0 1   0 2   0 3   0 4
+          1 0   1 1   1 2   1 3
+                2 0   2 1   2 2
+                      3 0   3 1
+                            4 0
+"""
 def numTrees(n: int) -> int:
         num = [0] * (n+1)
         num[0] = 1
@@ -443,4 +463,4 @@ def numTrees(n: int) -> int:
             num[i] = sum(num[j] * num[i-j-1] for j in range(i)) 
         return num[-1]
 
-print(numTrees(6))
+print(numTrees(19))

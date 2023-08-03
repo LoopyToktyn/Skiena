@@ -40,3 +40,38 @@ def two_sum(s: List[int], T: int) -> List[List[int]]:
     return res
 
 print(k_sum([1,2,3,4,5,6],10,4))
+
+
+"""
+4-13. [5] A camera at the door tracks the entry time ai and exit time bi (assume
+bi > ai) for each of n persons pi attending a party. Give an O(n log n) algorithm that analyzes this data to determine the time when the most people were
+simultaneously present at the party. You may assume that all entry and exit
+times are distinct (no ties).
+
+Could sort the data as tuples based on time with the pair value being entry or exit. Then step through the sort, increment count for each entry, decrement count for each exit,
+maintain a pointer at max.
+"""
+
+"""
+4-15. [5] You are given a set S of n intervals on a line, with the ith interval described
+by its left and right endpoints (li, ri). Give an O(n log n) algorithm to identify
+a point p on the line that is in the largest number of intervals.
+As an example, for S = {(10, 40),(20, 60),(50, 90),(15, 70)} no point exists in
+all four intervals, but p = 50 is an example of a point in three intervals. You
+can assume an endpoint counts as being in its interval.
+"""
+
+def interval_p(s: set[tuple[int,int]]) -> int:
+    ordered = []
+    for start,end in s:
+        ordered.append((start,1))
+        ordered.append((end,-1))
+
+    ordered.sort(key=lambda o: (o[0],-o[1])) # this sort will make sure that for any ties, the positive/increment value is considered first
+    count = 0
+    max = (0,0)
+    for val,action in ordered:
+        count += action
+        if count > max[1]:
+            max = (val,count)
+    return max[0]

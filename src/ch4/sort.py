@@ -1,6 +1,7 @@
 import sys
 sys.path.insert(0, r'F:\ws-py3\Skiena')
 from typing import List
+from collections import deque
 """
 . [5] Given a set S of n integers and an integer T, give an O(n^k-1 log n) algorithm
 to test whether k of the integers in S add up to T.
@@ -75,3 +76,51 @@ def interval_p(s: set[tuple[int,int]]) -> int:
         if count > max[1]:
             max = (val,count)
     return max[0]
+
+
+"""
+4-16. [5] You are given a set S of n segments on the line, where segment Si ranges
+from li to ri. Give an efficient algorithm to select the fewest number of segments
+whose union completely covers the interval from 0 to m.
+
+My approach:
+Since we start at 0, primary sort first val as is, secondary sort second val descending. This will give us largest first interval.
+From there, step through each value until the start val is greater than previous end val. Keep track as we step of which of those
+had the greatest end val. That's our next segment. Repeat until we find any value pair where end val is greater than m. 
+"""
+
+def seg_union(s: List[tuple[int,int]], m: int) -> List[tuple[int,int]]:
+    s.sort(key=lambda o: (o[0],-o[1])) # sort values. For s[0] ties, have the largest s[1] be first
+    res = []
+    
+    i = 1
+    previous_segment = s[0]
+    res.append(previous_segment)
+    best_choice = (0,0)
+    while i < len(s):
+
+        # Find our next best choice. If end is past m, append and return
+        if s[i][1] > best_choice[1]:
+            best_choice = s[i]
+            if best_choice[1] >= m:
+                res.append(best_choice)
+                return res
+
+        # If we're at end of list, append our current best choice and return
+        if i == len(s) - 1:
+            res.append(best_choice)
+            return res
+        
+        # Look at next val to see if we're at the end of our previous segment
+        if s[i+1][0] > previous_segment[1]:
+            res.append(best_choice)
+            previous_segment = best_choice
+
+        # If at any time after the above ops we end up in a situation where current start is greater
+        # than previous end, we have a discontinuity in our segments, there is no solution that covers full range
+        if s[i][0] > previous_segment[1]:
+            return None
+
+
+        i += 1
+    return res
